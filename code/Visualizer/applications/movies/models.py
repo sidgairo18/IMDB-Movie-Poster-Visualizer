@@ -16,7 +16,7 @@ class Movie(models.Model):
 	country = models.CharField(max_length=200, null=True)
 	director = models.CharField(max_length=200, null=True)
 	plot = models.CharField(max_length=2000, null=True)
-	rating = models.IntegerField(default=10.0, null=True)
+	rating = models.FloatField(default=10.0, null=True)
 
 	def serialize(cls):
 		return {
@@ -41,11 +41,13 @@ class MovieToGenre(models.Model):
 		}
 
 class FeatureToMovie(models.Model):
+	name = models.CharField(max_length=200, null=True)
 	feature = models.CharField(max_length=200, null=True)
 	movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
 
 	def serialize(cls):
 		return {
+			'name': cls.name,
 			'feature': cls.feature,
 			'movie': cls.movie.serialize()
 		}
