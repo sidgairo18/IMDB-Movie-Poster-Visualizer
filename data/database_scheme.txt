@@ -1,1 +1,13 @@
 List the schema for the databases used here.
+
+Table: Genre
+Fields: name (string)
+
+Table: Movie
+Fields: title (string), image (string), year (integer), director (string), plot (string), rating (float)
+
+Table: MovieToGenre
+Fields: movie (Movie), genre (Genre)
+
+Table: FeatureToMovie
+Fields: feature(string), movie (Movie)
