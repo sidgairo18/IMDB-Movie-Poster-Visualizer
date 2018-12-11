@@ -42,12 +42,12 @@ class MovieToGenre(models.Model):
 
 class FeatureToMovie(models.Model):
 	name = models.CharField(max_length=200, null=True)
-	feature = models.CharField(max_length=200, null=True)
+	path = models.CharField(max_length=200, null=True)
 	movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
 
 	def serialize(cls):
 		return {
 			'name': cls.name,
-			'feature': cls.feature,
+			'feature': cls.path,
 			'movie': cls.movie.serialize()
 		}
