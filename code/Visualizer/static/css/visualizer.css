@@ -1,0 +1,16 @@
+#postersTable {
+	width:  100%;
+	table-layout: fixed;
+}
+
+#postersTable img {
+	width: 100px;
+	height: 150px;
+	display: block;
+  	margin-left: auto;
+	margin-right: auto;
+}
+
+#optionsTable {
+	width: 60%;
+}
