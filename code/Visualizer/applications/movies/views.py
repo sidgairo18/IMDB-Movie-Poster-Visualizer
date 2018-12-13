@@ -27,6 +27,13 @@ def ajax_get_movies(request):
 			'movies': movies
 		}), content_type="application/json", status=200)
 
+def ajax_get_genres(request):
+	genres = get_genres()
+	return HttpResponse(json.dumps({
+			'total': len(genres),
+			'genres': genres
+		}), content_type="application/json", status=200)
+
 def get_movies(year=None, category=None):
 	items = MovieToGenre.objects.select_related('movie', 'genre')
 	if year != None:
@@ -36,3 +43,8 @@ def get_movies(year=None, category=None):
 	movies = [item.movie.serialize() for item in items]
 	movies = utils.filter_unique(movies, 'image')
 	return movies
+
+def get_genres():
+	items = Genre.objects.all()
+	genres = [item.serialize() for item in items]
+	return genres

@@ -12,7 +12,7 @@ var apis = {
         });
     }
 };
-// var global_var;
+var global_var;
 
 var top_k_neighbours = {
 	'images_per_row': 13,
@@ -26,8 +26,27 @@ var top_k_neighbours = {
 			top_k_neighbours.getMovies(year, category);
 		});
 
-		// get random movies at first
+		// get genres and random movies at first
+		top_k_neighbours.getGenres();
 		top_k_neighbours.getMovies(null, null);
+	},
+	getGenres: function () {
+		apis.jsonRequest('GET', '/ajax/genres', {},
+		successCallback = function (response) {
+			$.notify('successfully fetched genres', 'success');
+			top_k_neighbours.addGenres(response.genres);
+		},
+		errorCallback = function(response) {
+			$.notify('failed to get genres', 'error');
+		});
+	},
+	addGenres: function (genres) {
+		select = $('#optionsGenre')[0];
+		str = "";
+		for(var i = 0; i < genres.length; i++) {
+			str += "<option>" + genres[i].name + "</option>";
+		}
+		select.innerHTML = str;
 	},
 	getMovies: function (year, category) {
 		params = {};
@@ -39,11 +58,11 @@ var top_k_neighbours = {
 		}
 		apis.jsonRequest('GET', '/ajax/movies', params,
 		successCallback = function (response) {
-			$.notify('successfully fetched images', 'success');
+			$.notify('successfully fetched movies', 'success');
 			top_k_neighbours.createTable(response.movies);
 		},
 		errorCallback = function(response) {
-			$.notify('failed to get images', 'error');
+			$.notify('failed to get movies', 'error');
 		});
 	},
 	createTable: function (movies) {
