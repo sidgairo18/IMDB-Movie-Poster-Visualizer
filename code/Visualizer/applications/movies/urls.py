@@ -3,7 +3,8 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^movies/p1', views.page1, name='page1'),
-    url(r'^movies/p2', views.page2, name='page2'),
-    url(r'^', views.index, name='index'),
+    url(r'^ajax/movies', views.ajax_get_movies, name='Ajax request for movie list'),
+    url(r'^movies/p1', views.top_k_neighbours, name='Top K neighbours'),
+    url(r'^movies/p2', views.feature_visualization, name='Feature Visualization'),
+    url(r'^', views.index, name='Index page'),
 ]
