@@ -1,4 +1,41 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% block content %}
-<p> Welcome to the top k neighbour page </p>
+
+<!-- Content Part -->
+<div class="jumbotron">
+	<h5> Options </h5>
+	<table class="table" id="optionsTable">
+		<tbody>
+			<tr>
+				<td style="width: 45%;">
+					<input class="form-control mr-sm-2" type="text" placeholder="Year" id="optionsYear">
+				</td>
+				<td style="width: 45%;">
+					<input class="form-control mr-sm-2" type="text" placeholder="Genre" id="optionsGenre">
+				</td>
+				<td>
+					<button class="btn btn-secondary my-2 my-sm-0" type="submit" id="optionsSubmit">Search</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h5> Movie Posters </h5>
+	<table class="table table-hover" id="postersTable">
+		<tbody>
+		</tbody>
+	</table>
+
+	<h5> Top K neighbours </h5>
+	<table class="table table-hover" id="kNeighboursTable">
+		<tbody>
+		</tbody>
+	</table>
+</div>
+
+<!-- Script Part -->
+<script src="{% static 'js/movies.js' %}"></script>
+<script type="text/javascript">top_k_neighbours.init(); </script>
+
 {% endblock content %}

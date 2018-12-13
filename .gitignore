@@ -1,3 +1,4 @@
 *.pyc
 code/venv
 code/Visualizer/applications/*/migrations/*
+code/Visualizer/static/images
