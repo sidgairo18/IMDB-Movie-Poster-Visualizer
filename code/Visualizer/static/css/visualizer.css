@@ -1,14 +1,19 @@
 #postersTable {
-	width:  100%;
+	width: 100%;
 	table-layout: fixed;
 }
 
+#postersTable td {
+	padding: 2px;
+}
+
+#postersTable a {
+	padding: 3px;
+}
+
 #postersTable img {
-	width: 100px;
-	height: 150px;
-	display: block;
-  	margin-left: auto;
-	margin-right: auto;
+	width: 100%;
+	height: 130px;
 }
 
 #optionsTable {

@@ -15,6 +15,8 @@ var apis = {
 // var global_var;
 
 var top_k_neighbours = {
+	'images_per_row': 13,
+	'img_limit': 26,
 	init: function () {
 		$('#optionsSubmit').click(function () {
 			year = $('#optionsYear').val();
@@ -23,6 +25,9 @@ var top_k_neighbours = {
 			category = (category != "")? category : null;
 			top_k_neighbours.getMovies(year, category);
 		});
+
+		// get random movies at first
+		top_k_neighbours.getMovies(null, null);
 	},
 	getMovies: function (year, category) {
 		params = {};
@@ -43,13 +48,14 @@ var top_k_neighbours = {
 	},
 	createTable: function (movies) {
 		movies = top_k_neighbours.shuffle(movies);
-		limit = Math.min(movies.length, 30);
+		limit = Math.min(movies.length, top_k_neighbours.img_limit);
 		tbody = $('#postersTable').children()[0];
 		str = "";
 		for(var i = 0; i < limit;) {
 			str += '<tr style="align:center">';
-			for(var j = 0; j < 15 && i < limit; j++) {
-				str += '<td><img src="/static/images/' + movies[i].image + '"/></td>';
+			for(var j = 0; j < top_k_neighbours.images_per_row && i < limit; j++) {
+				str += '<td><a href="#" class="list-group-item list-group-item-action"><img src="/static/images/'
+				str += movies[i].image + '"/></a></td>';
 				i++;
 			}
 			str += '</tr>';
