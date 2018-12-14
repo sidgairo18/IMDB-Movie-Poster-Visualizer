@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+
+<!-- Content Part -->
+<div class="jumbotron">
+	<h5> Options </h5>
+	<table class="table" id="eoptionsTable">
+		<tbody>
+			<tr>
+				<td style="width: 45%;">
+					<input class="form-control mr-sm-2" type="text" placeholder="Year" id="eoptionsYear">
+				</td>
+				<td style="width: 45%;">
+					<select class="form-control" id="eoptionsGenre"></select>
+				</td>
+				<td>
+					<button class="btn btn-secondary my-2 my-sm-0" type="submit" id="eoptionsSubmit">Plot</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h5> Bokeh Plot </h5>
+</div>
+
+<!-- Script Part -->
+<script src="{% static 'js/movies.js' %}"></script>
+<script type="text/javascript">embeddings.init(); </script>
+
+{% endblock content %}

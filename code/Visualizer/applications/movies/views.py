@@ -11,7 +11,7 @@ def top_k_neighbours(request):
 	return render(request, 'movies/top_k_neighbours.html', {})
 
 def feature_visualization(request):
-	return render(request, 'movies/feature_visualization.html', {})
+	return render(request, 'movies/embeddings.html', {})
 
 def ajax_get_movies(request):
 	year = None

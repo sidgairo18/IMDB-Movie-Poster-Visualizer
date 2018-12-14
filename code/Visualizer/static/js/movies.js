@@ -12,7 +12,7 @@ var apis = {
         });
     }
 };
-var global_var;
+// var global_var;
 
 var top_k_neighbours = {
 	'images_per_row': 13,
@@ -93,3 +93,9 @@ var top_k_neighbours = {
 		return array;
 	}
 };
+
+var embeddings = {
+	init: function () {
+		console.log('welcome to embeddings page');
+	}
+}
