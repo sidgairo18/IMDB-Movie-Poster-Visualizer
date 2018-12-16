@@ -1,4 +1,4 @@
-var apis = {
+var utils = {
 	jsonRequest: function (method, url, data, successCallback, errorCallback) {
         $.ajax({
             headers: {
@@ -10,7 +10,25 @@ var apis = {
             success: successCallback,
             error: errorCallback
         });
-    }
+    },
+    addGenres: function (genres, select) {
+		str = "";
+		for(var i = 0; i < genres.length; i++) {
+			str += "<option>" + genres[i].name + "</option>";
+		}
+		select.innerHTML = str;
+	},
+    shuffle: function (array) {
+  		var currentIndex = array.length, temporaryValue, randomIndex;
+		while (0 !== currentIndex) {
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+		}
+		return array;
+	}
 };
 // var global_var;
 
@@ -31,22 +49,14 @@ var top_k_neighbours = {
 		top_k_neighbours.getMovies(null, null);
 	},
 	getGenres: function () {
-		apis.jsonRequest('GET', '/ajax/genres', {},
+		utils.jsonRequest('GET', '/ajax/genres', {},
 		successCallback = function (response) {
 			$.notify('successfully fetched genres', 'success');
-			top_k_neighbours.addGenres(response.genres);
+			utils.addGenres(response.genres, $('#optionsGenre')[0]);
 		},
 		errorCallback = function(response) {
 			$.notify('failed to get genres', 'error');
 		});
-	},
-	addGenres: function (genres) {
-		select = $('#optionsGenre')[0];
-		str = "";
-		for(var i = 0; i < genres.length; i++) {
-			str += "<option>" + genres[i].name + "</option>";
-		}
-		select.innerHTML = str;
 	},
 	getMovies: function (year, category) {
 		params = {};
@@ -56,7 +66,7 @@ var top_k_neighbours = {
 		if(category != null) {
 			params.category = category;
 		}
-		apis.jsonRequest('GET', '/ajax/movies', params,
+		utils.jsonRequest('GET', '/ajax/movies', params,
 		successCallback = function (response) {
 			$.notify('successfully fetched movies', 'success');
 			top_k_neighbours.createTable(response.movies);
@@ -66,36 +76,48 @@ var top_k_neighbours = {
 		});
 	},
 	createTable: function (movies) {
-		movies = top_k_neighbours.shuffle(movies);
+		movies = utils.shuffle(movies);
 		limit = Math.min(movies.length, top_k_neighbours.img_limit);
 		tbody = $('#postersTable').children()[0];
 		str = "";
-		for(var i = 0; i < limit;) {
+		for(var i = 0; i < top_k_neighbours.img_limit; ) {
 			str += '<tr style="align:center">';
-			for(var j = 0; j < top_k_neighbours.images_per_row && i < limit; j++) {
-				str += '<td><a href="#" class="list-group-item list-group-item-action"><img src="/static/images/'
-				str += movies[i].image + '"/></a></td>';
+			for(var j = 0; j < top_k_neighbours.images_per_row; j++) {
+				str += '<td><a href="#" class="list-group-item list-group-item-action">';
+				if(i < limit) {
+					str += '<img src="/static/images/' + movies[i].image + '" alt="Image"/>';
+				}
+				else {
+					str += '<img alt="Image"/>';
+				}
+				str += '</a></td>';
 				i++;
 			}
 			str += '</tr>';
 		}
 		tbody.innerHTML = str;
-	},
-	shuffle: function (array) {
-  		var currentIndex = array.length, temporaryValue, randomIndex;
-		while (0 !== currentIndex) {
-		randomIndex = Math.floor(Math.random() * currentIndex);
-		currentIndex -= 1;
-		temporaryValue = array[currentIndex];
-		array[currentIndex] = array[randomIndex];
-		array[randomIndex] = temporaryValue;
-		}
-		return array;
 	}
 };
 
 var embeddings = {
 	init: function () {
-		console.log('welcome to embeddings page');
+		$('#eoptionsSubmit').click(function () {
+			year = $('#eoptionsYear').val();
+			year = (year != "")? parseInt(year) : null;
+			embeddings.bokehPlot(year);
+		});
+	},
+	bokehPlot: function (year) {
+		params = {};
+		if(year != null) {
+			params.year = year;
+		}
+		utils.jsonRequest('GET', '/ajax/embeddings', params,
+		successCallback = function (response) {
+			$.notify('successfully fetched embeddings', 'success');
+		},
+		errorCallback = function(response) {
+			$.notify('failed to get bokeh plot', 'error');
+		});		
 	}
 }

@@ -13,6 +13,19 @@ def top_k_neighbours(request):
 def feature_visualization(request):
 	return render(request, 'movies/embeddings.html', {})
 
+def ajax_get_embeddings(request):
+	year = None
+	if 'year' in request.GET:
+		year = request.GET['year']
+
+	movies = get_movies(year=year)
+	X_t, Y_t, I_t = utils.preprocess_data(movies)
+	# print(X_t.shape, Y_t.shape)
+	plot = utils.visualize_features(X_t, Y_t, I_t, 50)
+	return HttpResponse(json.dumps({
+			'success': True
+		}), content_type="application/json", status=200)
+
 def ajax_get_movies(request):
 	year = None
 	category = None
