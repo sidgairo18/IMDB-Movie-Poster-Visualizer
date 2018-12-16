@@ -6,6 +6,7 @@ import pandas as pd
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from bokeh.plotting import figure, show
+from bokeh.embed import json_item
 
 def filter_unique(oldlist, field):
 	obj = {}
@@ -21,7 +22,7 @@ def preprocess_data(movies):
 	## intialization
 	rows = min(len(movies), 500)
 	Y_test = np.ones((rows, 1))
-	X_test = np.zeros((rows, 900))
+	X_test = np.zeros((rows, 300))
 	I_test = []
 
 	## randomly shuffle input movies and take atmost 500
@@ -33,8 +34,11 @@ def preprocess_data(movies):
 
 	## computing X_test, I_test
 	for row in range(len(movies)):
-		X_test[row: ] = np.array(Image.open('./static/images/' + movies[row]['image']).resize((10,30), Image.BICUBIC)).flatten()
-		I_test.append(np.rot90(np.array(Image.open('./static/images/' + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA')), 2))
+		X_test[row: ] = np.array(Image.open('./static/images/' + movies[row]['image']).resize((10,10), Image.BICUBIC)).flatten()
+		img = np.array(Image.open('./static/images/' + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
+		img = np.rot90(img, 2)
+		img = np.fliplr(img)
+		I_test.append(img)
 
 	return X_test, Y_test, I_test
 
@@ -48,13 +52,10 @@ def apply_tsne(data):
 	tsne_result = tsne.fit_transform(data)
 	return tsne_result
 
-## modify bokeh plot a bit
 def bokeh_plot(X_test, I_test, df):
-	p = figure(x_range=(np.min(df['c1']), np.max(df['c1'])), 
-			   y_range=(np.min(df['c2']), np.max(df['c2'])),
-			   plot_width=950, plot_height=950)
+	p = figure(x_range=(-500, 500), y_range=(-500, 500), plot_width=950, plot_height=950)
 	p.image_rgba(image=I_test, x=df['c1'], y=df['c2'], dw=1, dh=1)
-	show(p)
+	return json_item(p)
 
 def visualize_features(X_test, Y_test, I_test, pca_components):
 	feat_cols = [ 'pixel'+str(i) for i in range(X_test.shape[1]) ]
@@ -72,4 +73,4 @@ def visualize_features(X_test, Y_test, I_test, pca_components):
 
 	df_tsne['c1'] = tsne_result[:, 0]
 	df_tsne['c2'] = tsne_result[:, 1]
-	bokeh_plot(X_test, I_copy, df_tsne)
+	return bokeh_plot(X_test, I_copy, df_tsne)

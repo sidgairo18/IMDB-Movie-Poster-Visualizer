@@ -23,7 +23,7 @@ def ajax_get_embeddings(request):
 	# print(X_t.shape, Y_t.shape)
 	plot = utils.visualize_features(X_t, Y_t, I_t, 50)
 	return HttpResponse(json.dumps({
-			'success': True
+			'plot': plot
 		}), content_type="application/json", status=200)
 
 def ajax_get_movies(request):

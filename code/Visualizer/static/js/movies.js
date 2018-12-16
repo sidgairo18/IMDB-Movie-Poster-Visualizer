@@ -30,7 +30,7 @@ var utils = {
 		return array;
 	}
 };
-// var global_var;
+var global_var;
 
 var top_k_neighbours = {
 	'images_per_row': 13,
@@ -115,6 +115,7 @@ var embeddings = {
 		utils.jsonRequest('GET', '/ajax/embeddings', params,
 		successCallback = function (response) {
 			$.notify('successfully fetched embeddings', 'success');
+			Bokeh.embed.embed_item(response.plot, "plot1");
 		},
 		errorCallback = function(response) {
 			$.notify('failed to get bokeh plot', 'error');
