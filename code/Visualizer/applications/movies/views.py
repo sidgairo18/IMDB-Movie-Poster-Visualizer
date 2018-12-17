@@ -17,10 +17,14 @@ def feature_visualization(request):
 
 def ajax_get_embeddings(request):
 	year = None
+	category = None
 	if 'year' in request.GET:
 		year = request.GET['year']
+	if 'category' in request.GET:
+		category = request.GET['category']
+		if category == 'None' : category = None
 
-	movies = get_movies(year=year)
+	movies = get_movies(year=year, category=category)
 	X_t, Y_t, I_t = utils.preprocess_data(settings.DATASET, movies)
 	plot = utils.visualize_features(X_t, Y_t, I_t, 50)
 	return HttpResponse(json.dumps({
@@ -34,6 +38,7 @@ def ajax_get_movies(request):
 		year = request.GET['year']
 	if 'category' in request.GET:
 		category = request.GET['category']
+		if category == 'None' : category = None
 
 	movies = get_movies(year=year, category=category)
 	return HttpResponse(json.dumps({

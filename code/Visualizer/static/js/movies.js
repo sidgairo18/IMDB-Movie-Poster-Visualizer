@@ -12,7 +12,7 @@ var utils = {
         });
     },
     addGenres: function (genres, select) {
-		str = "";
+		str = "<option>None</option>";
 		for(var i = 0; i < genres.length; i++) {
 			str += "<option>" + genres[i].name + "</option>";
 		}
@@ -106,6 +106,7 @@ var embeddings = {
 			year = (year != "")? parseInt(year) : null;
 			embeddings.bokehPlot(year);
 		});
+		embeddings.getGenres();
 	},
 	bokehPlot: function (year) {
 		params = {};
@@ -120,5 +121,16 @@ var embeddings = {
 		errorCallback = function(response) {
 			$.notify('failed to get bokeh plot', 'error');
 		});		
-	}
+	},
+	getGenres: function () {
+		utils.jsonRequest('GET', '/ajax/genres', {},
+		successCallback = function (response) {
+			$.notify('successfully fetched genres', 'success');
+			utils.addGenres(response.genres, $('#eoptionsGenre')[0]);
+		},
+		errorCallback = function(response) {
+			$.notify('failed to get genres', 'error');
+		});
+	},
+
 }
