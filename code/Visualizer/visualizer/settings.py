@@ -128,3 +128,9 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
     DATASET
 )
+
+# Embedding hyper parameters
+
+E_ITER = 500
+E_PCA = 50
+E_NUM = 500

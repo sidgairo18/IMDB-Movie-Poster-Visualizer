@@ -16,7 +16,7 @@ var utils = {
 		for(var i = 0; i < genres.length; i++) {
 			str += "<option>" + genres[i].name + "</option>";
 		}
-		select.innerHTML = str;
+		select.html(str);
 	},
     shuffle: function (array) {
   		var currentIndex = array.length, temporaryValue, randomIndex;
@@ -52,7 +52,7 @@ var top_k_neighbours = {
 		utils.jsonRequest('GET', '/ajax/genres', {},
 		successCallback = function (response) {
 			$.notify('successfully fetched genres', 'success');
-			utils.addGenres(response.genres, $('#optionsGenre')[0]);
+			utils.addGenres(response.genres, $('#optionsGenre'));
 		},
 		errorCallback = function(response) {
 			$.notify('failed to get genres', 'error');
@@ -78,7 +78,7 @@ var top_k_neighbours = {
 	createTable: function (movies) {
 		movies = utils.shuffle(movies);
 		limit = Math.min(movies.length, top_k_neighbours.img_limit);
-		tbody = $('#postersTable').children()[0];
+		tbody = $('#postersTable').children();
 		str = "";
 		for(var i = 0; i < top_k_neighbours.img_limit; ) {
 			str += '<tr style="align:center">';
@@ -95,7 +95,7 @@ var top_k_neighbours = {
 			}
 			str += '</tr>';
 		}
-		tbody.innerHTML = str;
+		tbody.html(str);
 	}
 };
 
@@ -116,6 +116,8 @@ var embeddings = {
 		utils.jsonRequest('GET', '/ajax/embeddings', params,
 		successCallback = function (response) {
 			$.notify('successfully fetched embeddings', 'success');
+			global_var = response.plot;
+			$('#plot1').html("");
 			Bokeh.embed.embed_item(response.plot, "plot1");
 		},
 		errorCallback = function(response) {
@@ -126,7 +128,7 @@ var embeddings = {
 		utils.jsonRequest('GET', '/ajax/genres', {},
 		successCallback = function (response) {
 			$.notify('successfully fetched genres', 'success');
-			utils.addGenres(response.genres, $('#eoptionsGenre')[0]);
+			utils.addGenres(response.genres, $('#eoptionsGenre'));
 		},
 		errorCallback = function(response) {
 			$.notify('failed to get genres', 'error');

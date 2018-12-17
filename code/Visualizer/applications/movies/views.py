@@ -26,7 +26,7 @@ def ajax_get_embeddings(request):
 
 	movies = get_movies(year=year, category=category)
 	X_t, Y_t, I_t = utils.preprocess_data(settings.DATASET, movies)
-	plot = utils.visualize_features(X_t, Y_t, I_t, 50)
+	plot = utils.visualize_features(X_t, Y_t, I_t, settings.E_PCA)
 	return HttpResponse(json.dumps({
 			'plot': plot
 		}), content_type="application/json", status=200)

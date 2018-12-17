@@ -7,6 +7,7 @@ from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from bokeh.plotting import figure, show
 from bokeh.embed import json_item
+import visualizer.settings as settings 
 
 def filter_unique(oldlist, field):
 	obj = {}
@@ -20,7 +21,7 @@ def filter_unique(oldlist, field):
 def preprocess_data(path, movies):
 
 	## intialization
-	rows = min(len(movies), 500)
+	rows = min(len(movies), settings.E_NUM)
 	Y_test = np.ones((rows, 1))
 	X_test = np.zeros((rows, 300))
 	I_test = []
@@ -30,11 +31,21 @@ def preprocess_data(path, movies):
 	movies = movies[:rows]
 
 	## intialize labels for each movie
-	## TODO
+	labels = {}
+	cnt = 0
+	for row in range(len(movies)):
+		image = movies[row]['image']
+		image = image.split('.')[0].split('_')[1]
+		if image in labels:
+			Y_test[row: ] = labels[image]
+		else:
+			labels[image] = cnt
+			Y_test[row: ] = cnt
+			cnt = cnt + 1
 
 	## computing X_test, I_test
 	for row in range(len(movies)):
-		X_test[row: ] = np.array(Image.open(path + movies[row]['image']).resize((10,10), Image.BICUBIC)).flatten()
+		# X_test[row: ] = np.array(Image.open(path + movies[row]['image']).resize((10,10), Image.BICUBIC)).flatten()
 		img = np.array(Image.open(path + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
 		img = np.rot90(img, 2)
 		img = np.fliplr(img)
@@ -48,7 +59,7 @@ def apply_pca(data, pca_components):
 	return pca_result
 
 def apply_tsne(data):
-	tsne = TSNE(n_components=2, verbose=1, perplexity=40, n_iter=500)
+	tsne = TSNE(n_components=2, verbose=1, perplexity=40, n_iter=settings.E_ITER)
 	tsne_result = tsne.fit_transform(data)
 	return tsne_result
 
