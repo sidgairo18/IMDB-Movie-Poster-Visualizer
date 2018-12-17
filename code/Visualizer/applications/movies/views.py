@@ -2,7 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from applications.movies.models import *
 import applications.utils as utils 
+import visualizer.settings as settings
 import json
+import os
 
 def index(request):
 	return render(request, 'movies/index.html', {})
@@ -19,8 +21,7 @@ def ajax_get_embeddings(request):
 		year = request.GET['year']
 
 	movies = get_movies(year=year)
-	X_t, Y_t, I_t = utils.preprocess_data(movies)
-	# print(X_t.shape, Y_t.shape)
+	X_t, Y_t, I_t = utils.preprocess_data(settings.DATASET, movies)
 	plot = utils.visualize_features(X_t, Y_t, I_t, 50)
 	return HttpResponse(json.dumps({
 			'plot': plot

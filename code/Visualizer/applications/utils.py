@@ -17,7 +17,7 @@ def filter_unique(oldlist, field):
 			obj[ele[field]] = True
 	return newlist
 
-def preprocess_data(movies):
+def preprocess_data(path, movies):
 
 	## intialization
 	rows = min(len(movies), 500)
@@ -34,8 +34,8 @@ def preprocess_data(movies):
 
 	## computing X_test, I_test
 	for row in range(len(movies)):
-		X_test[row: ] = np.array(Image.open('./static/images/' + movies[row]['image']).resize((10,10), Image.BICUBIC)).flatten()
-		img = np.array(Image.open('./static/images/' + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
+		X_test[row: ] = np.array(Image.open(path + movies[row]['image']).resize((10,10), Image.BICUBIC)).flatten()
+		img = np.array(Image.open(path + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
 		img = np.rot90(img, 2)
 		img = np.fliplr(img)
 		I_test.append(img)

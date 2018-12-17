@@ -85,7 +85,7 @@ var top_k_neighbours = {
 			for(var j = 0; j < top_k_neighbours.images_per_row; j++) {
 				str += '<td><a href="#" class="list-group-item list-group-item-action">';
 				if(i < limit) {
-					str += '<img src="/static/images/' + movies[i].image + '" alt="Image"/>';
+					str += '<img src="/static/' + movies[i].image + '" alt="Image"/>';
 				}
 				else {
 					str += '<img alt="Image"/>';
