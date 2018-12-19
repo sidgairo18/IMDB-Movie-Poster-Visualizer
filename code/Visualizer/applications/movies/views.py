@@ -25,8 +25,13 @@ def ajax_get_embeddings(request):
 		if category == 'None' : category = None
 
 	movies = get_movies(year=year, category=category)
-	X_t, Y_t, I_t = utils.preprocess_data(settings.DATASET, movies)
-	plot = utils.visualize_features(X_t, Y_t, I_t, settings.E_PCA)
+	if len(movies) > 0:
+		X_t, Y_t, I_t = utils.preprocess_data(settings.DATASET, movies)
+		plot = utils.visualize_features(X_t, Y_t, I_t, min(settings.E_PCA, len(movies)))
+	else:
+		return HttpResponse(json.dumps({
+				'error': 'No movies in this category'
+			}), content_type="application/json", status=200)
 	return HttpResponse(json.dumps({
 			'plot': plot
 		}), content_type="application/json", status=200)

@@ -151,25 +151,34 @@ var embeddings = {
 		$('#eoptionsSubmit').click(function () {
 			year = $('#eoptionsYear').val();
 			year = (year != "")? parseInt(year) : null;
-			embeddings.bokehPlot(year);
+			category = $('#eoptionsGenre').val();
+			category = (category != "")? category : null;
+			embeddings.bokehPlot(year, category);
 		});
 		embeddings.getGenres();
 	},
-	bokehPlot: function (year) {
+	bokehPlot: function (year, category) {
 		params = {};
 		if(year != null) {
 			params.year = year;
 		}
+		if(category != null) {
+			params.category = category;
+		}
 		utils.jsonRequest('GET', '/ajax/embeddings', params,
 		successCallback = function (response) {
 			$.notify('successfully fetched embeddings', 'success');
-			global_var = response.plot;
-			$('#plot1').html("");
-			Bokeh.embed.embed_item(response.plot, "plot1");
+			if(response.error !== undefined) {
+				$.notify(response.error, 'error');
+			}
+			else {
+				$('#plot1').html("");
+				Bokeh.embed.embed_item(response.plot, "plot1");
+			}
 		},
 		errorCallback = function(response) {
 			$.notify('failed to get bokeh plot', 'error');
-		});		
+		});
 	},
 	getGenres: function () {
 		utils.jsonRequest('GET', '/ajax/genres', {},
