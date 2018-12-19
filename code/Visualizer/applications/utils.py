@@ -7,7 +7,8 @@ from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from bokeh.plotting import figure, show
 from bokeh.embed import json_item
-import visualizer.settings as settings 
+import visualizer.settings as settings
+import heapq 
 
 def filter_unique(oldlist, field):
 	obj = {}
@@ -85,3 +86,32 @@ def visualize_features(X_test, Y_test, I_test, pca_components):
 	df_tsne['c1'] = tsne_result[:, 0]
 	df_tsne['c2'] = tsne_result[:, 1]
 	return bokeh_plot(X_test, I_copy, df_tsne)
+
+def get_distance(x, y):
+	np.linalg.norm(x-y)
+
+def get_top_neighbours(path, image, movies, k):
+	# features = np.load(path + image)
+	random.shuffle(movies)
+	maxHeap = []
+	for j in range(len(movies)):
+		# if movies[j]['image'] == image:
+		# 	continue
+		# features2 = np.load(path + movies[j].image)
+		# d = get_distance(features, features2)
+		d = 0
+		if len(maxHeap) < k:
+			heapq.heappush(maxHeap, (-d, j))
+		else:
+			top = heapq.heappop(maxHeap)
+			if (d < -top[0]):
+				heapq.heappush(maxHeap, (-d, j))
+			else:
+				heapq.heappush(maxHeap, top)
+
+	neighbours = []
+	for j in range(k - 1, -1, -1):
+		top = heapq.heappop(maxHeap)
+		neighbours.append(movies[top[1]])
+	neighbours = neighbours[::-1]
+	return neighbours

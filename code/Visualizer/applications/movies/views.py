@@ -53,6 +53,20 @@ def ajax_get_genres(request):
 			'genres': genres
 		}), content_type="application/json", status=200)
 
+def ajax_get_top_neighbours(request):
+	image = None
+	k = None
+	if 'image' in request.GET:
+		image = request.GET['image']
+	if 'k' in request.GET:
+		k = int(request.GET['k'])
+	movies = get_movies()
+	movies = utils.get_top_neighbours(settings.DATASET, image, movies, k)
+	return HttpResponse(json.dumps({
+			'total': len(movies),
+			'movies': movies
+		}), content_type="application/json", status=200)
+
 def get_movies(year=None, category=None):
 	items = MovieToGenre.objects.select_related('movie', 'genre')
 	if year != None:

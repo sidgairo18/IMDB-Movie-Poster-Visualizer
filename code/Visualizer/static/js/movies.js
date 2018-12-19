@@ -83,8 +83,55 @@ var top_k_neighbours = {
 		for(var i = 0; i < top_k_neighbours.img_limit; ) {
 			str += '<tr style="align:center">';
 			for(var j = 0; j < top_k_neighbours.images_per_row; j++) {
-				str += '<td><a href="#" class="list-group-item list-group-item-action">';
 				if(i < limit) {
+					str += '<td id="' + (movies[i].image).split(".", 2)[0] + '">';
+					str += '<a class="list-group-item list-group-item-action">';
+					str += '<img src="/static/' + movies[i].image + '" alt="Image"/>';
+				}
+				else {
+					str += '<td><a class="list-group-item list-group-item-action">';
+					str += '<img alt="Image"/>';
+				}
+				str += '</a></td>';
+				i++;
+			}
+			str += '</tr>';
+		}
+		tbody.html(str);
+		for(var i = 0; i < limit; i++) {
+			$('#' + (movies[i].image).split(".", 2)[0]).click(function() {
+				top_k_neighbours.getTopNeighbours(this.id + ".txt.jpg");
+			});
+		}
+	},
+	getTopNeighbours: function(image) {
+		k = $('#optionsK').val();
+		k = (k != "")? parseInt(k) : 8;
+		utils.jsonRequest('GET', '/ajax/top_neighbours', {
+			'image': image,
+			'k': k
+		},
+		successCallback = function (response) {
+			$.notify('successfully gathered top k','success');
+			top_k_neighbours.displayTopNeighbours(response.movies);
+		},
+		errorCallback = function (response) {
+			$.notify('failed to gather top k','error');			
+		});
+	},
+	displayTopNeighbours: function (movies) {
+		var num = movies.length;
+		var rows = parseInt(num / top_k_neighbours.images_per_row);
+		if(num % top_k_neighbours.images_per_row != 0) {
+			rows++;
+		}
+		tbody = $('#topNeighboursTable').children();
+		str = "";
+		for(var i = 0; i < rows*top_k_neighbours.images_per_row; ) {
+			str += '<tr style="align:center">';
+			for(var j = 0; j < top_k_neighbours.images_per_row; j++) {
+				str += '<td><a class="list-group-item list-group-item-action">';
+				if(i < num) {
 					str += '<img src="/static/' + movies[i].image + '" alt="Image"/>';
 				}
 				else {

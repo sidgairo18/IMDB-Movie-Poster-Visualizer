@@ -1,3 +1,7 @@
+#optionsTable {
+	width: 80%;
+}
+
 #postersTable {
 	width: 100%;
 	table-layout: fixed;
@@ -19,8 +23,25 @@
 	margin-right: auto;
 }
 
-#optionsTable {
-	width: 60%;
+#topNeighboursTable {
+	width: 100%;
+	table-layout: fixed;
+}
+
+#topNeighboursTable td {
+	padding: 2px;
+}
+
+#topNeighboursTable a {
+	padding: 3px;
+}
+
+#topNeighboursTable img {
+	width: 100px;
+	height: 130px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #eoptionsTable {
