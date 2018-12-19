@@ -92,14 +92,17 @@ def get_distance(x, y):
 
 def get_top_neighbours(path, image, movies, k):
 	# features = np.load(path + image)
+	k = k + 1
+	features = np.array(Image.open(path + image).resize((10,10), Image.BICUBIC)).flatten()[:100]
 	random.shuffle(movies)
 	maxHeap = []
 	for j in range(len(movies)):
-		# if movies[j]['image'] == image:
-		# 	continue
 		# features2 = np.load(path + movies[j].image)
+		features2 = np.array(Image.open(path + movies[j]['image']).resize((10,10), Image.BICUBIC)).flatten()[:100]
 		# d = get_distance(features, features2)
-		d = 0
+		d = np.sum(np.square(features - features2))
+		print(d,j)
+		# d = 0
 		if len(maxHeap) < k:
 			heapq.heappush(maxHeap, (-d, j))
 		else:
@@ -113,5 +116,4 @@ def get_top_neighbours(path, image, movies, k):
 	for j in range(k - 1, -1, -1):
 		top = heapq.heappop(maxHeap)
 		neighbours.append(movies[top[1]])
-	neighbours = neighbours[::-1]
 	return neighbours

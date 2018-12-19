@@ -67,10 +67,20 @@ def ajax_get_top_neighbours(request):
 		k = int(request.GET['k'])
 	movies = get_movies()
 	movies = utils.get_top_neighbours(settings.DATASET, image, movies, k)
+	for movie in movies:
+		movie['genres'] = get_genres_by_movie(movie)
 	return HttpResponse(json.dumps({
 			'total': len(movies),
 			'movies': movies
 		}), content_type="application/json", status=200)
+
+def get_genres_by_movie(movie):
+	movie = Movie.objects.filter(id=movie['id']).first()
+	items = MovieToGenre.objects.filter(movie=movie)
+	genres = []
+	for item in items:
+		genres.append(item.genre.serialize()['name'])
+	return genres
 
 def get_movies(year=None, category=None):
 	items = MovieToGenre.objects.select_related('movie', 'genre')

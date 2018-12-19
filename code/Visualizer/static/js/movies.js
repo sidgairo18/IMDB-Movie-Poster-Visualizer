@@ -137,12 +137,29 @@ var top_k_neighbours = {
 				else {
 					str += '<img alt="Image"/>';
 				}
-				str += '</a></td>';
+				str += '</a>';
+				if(i < num) {
+					str += top_k_neighbours.getMovieInfo(movies[i]);
+				}
+				str += '</td>';
 				i++;
 			}
 			str += '</tr>';
 		}
 		tbody.html(str);
+	},
+	getMovieInfo: function (movie) {
+		var str = "";
+		str += '<div class="card text-white bg-primary mb-3" style="max-width: 30rem; text-align:center;">';
+		str += '<div class="card-header" style="font-size:17px; padding:3px;">Movie Info</div>';
+		str += '<h5 style="padding:10px;">Title</h5><p style="height:50px;">';
+		str += movie.title + '</p>';
+		str += '<h5 style="padding:10px;">Genre</h5><p style="height:70px;">';
+		for(var k = 0; k < movie.genres.length; k++) {
+			str += movie.genres[k] + '<br/>';
+		}
+		str += '</p></div>';
+		return str;
 	}
 };
 
