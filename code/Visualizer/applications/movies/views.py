@@ -26,7 +26,7 @@ def ajax_get_embeddings(request):
 
 	movies = get_movies(year=year, category=category)
 	if len(movies) > 0:
-		X_t, Y_t, I_t = utils.preprocess_data(settings.DATASET, movies)
+		X_t, Y_t, I_t = utils.preprocess_data(settings.FEATURE, settings.DATASET, movies)
 		plot = utils.visualize_features(X_t, Y_t, I_t, min(settings.E_PCA, len(movies)))
 	else:
 		return HttpResponse(json.dumps({
@@ -66,7 +66,7 @@ def ajax_get_top_neighbours(request):
 	if 'k' in request.GET:
 		k = int(request.GET['k'])
 	movies = get_movies()
-	movies = utils.get_top_neighbours(settings.DATASET, image, movies, k)
+	movies = utils.get_top_neighbours(settings.FEATURE, image, movies, k)
 	for movie in movies:
 		movie['genres'] = get_genres_by_movie(movie)
 	return HttpResponse(json.dumps({

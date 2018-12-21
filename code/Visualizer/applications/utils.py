@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 import random
 from sklearn import datasets
 from PIL import Image
@@ -19,7 +20,7 @@ def filter_unique(oldlist, field):
 			obj[ele[field]] = True
 	return newlist
 
-def preprocess_data(path, movies):
+def preprocess_data(f_path, i_path, movies):
 
 	## intialization
 	rows = min(len(movies), settings.E_NUM)
@@ -46,8 +47,8 @@ def preprocess_data(path, movies):
 
 	## computing X_test, I_test
 	for row in range(len(movies)):
-		# X_test[row: ] = np.array(Image.open(path + movies[row]['image']).resize((10,10), Image.BICUBIC)).flatten()
-		img = np.array(Image.open(path + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
+		X_test[row: ] = torch.load(f_path + movies[row]['image']).numpy()
+		img = np.array(Image.open(i_path + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
 		img = np.rot90(img, 2)
 		img = np.fliplr(img)
 		I_test.append(img)
@@ -91,16 +92,16 @@ def get_distance(x, y):
 	np.linalg.norm(x-y)
 
 def get_top_neighbours(path, image, movies, k):
-	# features = np.load(path + image)
 	k = k + 1
-	features = np.array(Image.open(path + image).resize((10,10), Image.BICUBIC)).flatten()[:100]
+	features = torch.load(path + image).numpy()
+	# features = np.array(Image.open(path + image).resize((10,10), Image.BICUBIC)).flatten()[:100]
 	random.shuffle(movies)
 	maxHeap = []
 	for j in range(len(movies)):
-		# features2 = np.load(path + movies[j].image)
-		features2 = np.array(Image.open(path + movies[j]['image']).resize((10,10), Image.BICUBIC)).flatten()[:100]
-		# d = get_distance(features, features2)
-		d = np.sum(np.square(features - features2))
+		features2 = torch.load(path + movies[j]['image']).numpy()
+		# features2 = np.array(Image.open(path + movies[j]['image']).resize((10,10), Image.BICUBIC)).flatten()[:100]
+		d = get_distance(features, features2)
+		# d = np.sum(np.square(features - features2))
 		print(d,j)
 		# d = 0
 		if len(maxHeap) < k:
