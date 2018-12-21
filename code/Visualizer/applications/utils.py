@@ -25,7 +25,7 @@ def preprocess_data(f_path, i_path, movies):
 	## intialization
 	rows = min(len(movies), settings.E_NUM)
 	Y_test = np.ones((rows, 1))
-	X_test = np.zeros((rows, 300))
+	X_test = np.zeros((rows, 1178))
 	I_test = []
 
 	## randomly shuffle input movies and take atmost 500
@@ -47,7 +47,7 @@ def preprocess_data(f_path, i_path, movies):
 
 	## computing X_test, I_test
 	for row in range(len(movies)):
-		X_test[row: ] = torch.load(f_path + movies[row]['image']).numpy()
+		X_test[row: ] = torch.load(f_path + movies[row]['image'], map_location='cpu').numpy()
 		img = np.array(Image.open(i_path + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
 		img = np.rot90(img, 2)
 		img = np.fliplr(img)
@@ -89,18 +89,19 @@ def visualize_features(X_test, Y_test, I_test, pca_components):
 	return bokeh_plot(X_test, I_copy, df_tsne)
 
 def get_distance(x, y):
-	np.linalg.norm(x-y)
+	return np.linalg.norm(x-y)
 
 def get_top_neighbours(path, image, movies, k):
 	k = k + 1
-	features = torch.load(path + image).numpy()
+	features = torch.load(path + image, map_location='cpu').numpy()
 	# features = np.array(Image.open(path + image).resize((10,10), Image.BICUBIC)).flatten()[:100]
 	random.shuffle(movies)
 	maxHeap = []
 	for j in range(len(movies)):
-		features2 = torch.load(path + movies[j]['image']).numpy()
+		features2 = torch.load(path + movies[j]['image'], map_location='cpu').numpy()
 		# features2 = np.array(Image.open(path + movies[j]['image']).resize((10,10), Image.BICUBIC)).flatten()[:100]
 		d = get_distance(features, features2)
+		print(features.shape, features2.shape)
 		# d = np.sum(np.square(features - features2))
 		print(d,j)
 		# d = 0
@@ -117,4 +118,5 @@ def get_top_neighbours(path, image, movies, k):
 	for j in range(k - 1, -1, -1):
 		top = heapq.heappop(maxHeap)
 		neighbours.append(movies[top[1]])
+	neighbours = neighbours[::-1]
 	return neighbours

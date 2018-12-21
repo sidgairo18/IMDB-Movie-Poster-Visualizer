@@ -154,6 +154,8 @@ var top_k_neighbours = {
 		str += '<div class="card-header" style="font-size:17px; padding:3px;">Movie Info</div>';
 		str += '<h5 style="padding:10px;">Title</h5><p style="height:50px;">';
 		str += movie.title + '</p>';
+		str += '<h5 style="padding:10px;">Label</h5><p style="height:25px;">';
+		str += movie.image.split("_")[1].split(".")[0] + '</p>';
 		str += '<h5 style="padding:10px;">Genre</h5><p style="height:70px;">';
 		for(var k = 0; k < movie.genres.length; k++) {
 			str += movie.genres[k] + '<br/>';
