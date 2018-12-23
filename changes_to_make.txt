@@ -1,0 +1,19 @@
+Changes to Make to the Current Version 
+
+K Neighbours (Tab 1)
+1. Range Years
+2. Multiple Genre Selection
+3. Features + lambda (Matrix + Combination)
+4. Correlation in terms of Genres, features, plots.
+5. Cosine similarity, distance in feature space of the neighbours.
+6. Hover box to show details.
+
+Visualzations (Tab 2)
+
+1. Default Grid size to be smaller
+2. Multiple Years, genres.
+3. Range for the above.
+4. Start with all Years and Genres:
+   * Add and Remove to the same plot. (Donot generate the same plot again and again.)
+5. Give max Genre for each grid.
+6. Crop select and display stats.
