@@ -12,7 +12,7 @@ var utils = {
         });
     },
     addGenres: function (genres, select) {
-		str = "<option>None</option>";
+		str = "";
 		for(var i = 0; i < genres.length; i++) {
 			str += "<option>" + genres[i].name + "</option>";
 		}
@@ -37,11 +37,13 @@ var top_k_neighbours = {
 	'img_limit': 26,
 	init: function () {
 		$('#optionsSubmit').click(function () {
-			year = $('#optionsYear').val();
+			syear = $('#optionsSyear').val();
+			eyear = $('#optionsEyear').val();
 			category = $('#optionsGenre').val();
-			year = (year != "")? parseInt(year) : null;
-			category = (category != "")? category : null;
-			top_k_neighbours.getMovies(year, category);
+			syear = (syear != "")? parseInt(syear) : null;
+			eyear = (eyear != "")? parseInt(eyear) : null;
+			andopr = $('#optionsGenreAnd').is(':checked');
+			top_k_neighbours.getMovies(syear, eyear, category, andopr);
 		});
 
 		// get genres and random movies at first
@@ -58,13 +60,19 @@ var top_k_neighbours = {
 			$.notify('failed to get genres', 'error');
 		});
 	},
-	getMovies: function (year, category) {
+	getMovies: function (syear, eyear, category, andopr) {
 		params = {};
-		if(year != null) {
-			params.year = year;
+		if(syear != null) {
+			params.syear = syear;
+		}
+		if(eyear != null) {
+			params.eyear = eyear;
 		}
 		if(category != null) {
 			params.category = category;
+		}
+		if(andopr != null) {
+			params.andopr = andopr;
 		}
 		utils.jsonRequest('GET', '/ajax/movies', params,
 		successCallback = function (response) {

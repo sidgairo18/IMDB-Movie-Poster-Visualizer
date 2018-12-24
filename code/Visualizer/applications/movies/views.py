@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.db.models import Q
 from applications.movies.models import *
 import applications.utils as utils 
 import visualizer.settings as settings
@@ -37,15 +38,21 @@ def ajax_get_embeddings(request):
 		}), content_type="application/json", status=200)
 
 def ajax_get_movies(request):
-	year = None
-	category = None
-	if 'year' in request.GET:
-		year = request.GET['year']
-	if 'category' in request.GET:
-		category = request.GET['category']
-		if category == 'None' : category = None
+	syear = None
+	eyear = None
+	categories = None
+	andopr = None
+	if 'syear' in request.GET:
+		syear = request.GET['syear']
+	if 'eyear' in request.GET:
+		eyear = request.GET['eyear']
+	if 'category[]' in request.GET:
+		categories = request.GET.getlist('category[]')
+	if 'andopr' in request.GET:
+		andopr = request.GET['andopr']
+		andopr = True if (andopr == 'true') else False
 
-	movies = get_movies(year=year, category=category)
+	movies = get_movies_range(syear=syear, eyear=eyear, categories=categories, andopr=andopr)
 	return HttpResponse(json.dumps({
 			'total': len(movies),
 			'movies': movies
@@ -96,3 +103,34 @@ def get_genres():
 	items = Genre.objects.all()
 	genres = [item.serialize() for item in items]
 	return genres
+
+def get_movies_range(syear, eyear, categories, andopr):
+	items = MovieToGenre.objects.select_related('movie', 'genre')
+	if syear != None:
+		items = items.filter(movie__year__gte=syear)
+	if eyear != None:
+		items = items.filter(movie__year__lte=eyear)
+	if categories != None and andopr != None:
+		if andopr == True:
+			movies = set(items.values_list('movie', flat=True))
+			for category in categories:
+				movies = movies.intersection(set(items.filter(genre__name=category).values_list('movie', flat=True)))
+			movies = list(movies)
+			if len(movies) > 0:
+				queries = [Q(id=movie_id) for movie_id in movies]
+				query = queries.pop()
+				for item in queries:
+					query |= item
+				items = Movie.objects.filter(query)
+				movies = [item.serialize() for item in items]
+				return movies
+			return []
+		else:
+			queries = [Q(genre__name=category) for category in categories]
+			query = queries.pop()
+			for item in queries:
+				query |= item
+			items = items.filter(query)
+	movies = [item.movie.serialize() for item in items]
+	movies = utils.filter_unique(movies, 'image')
+	return movies
