@@ -10,9 +10,9 @@ K Neighbours (Tab 1)
 
 Visualzations (Tab 2)
 
-1. Default Grid size to be smaller
-2. Multiple Years, genres.
-3. Range for the above.
+1. Default Grid size to be smaller - [Done]
+2. Multiple Years, genres. - [Done]
+3. Range for the above. - [Done]
 4. Start with all Years and Genres:
    * Add and Remove to the same plot. (Donot generate the same plot again and again.)
 5. Give max Genre for each grid.
