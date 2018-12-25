@@ -1,5 +1,5 @@
 import numpy as np
-import torch
+# import torch
 import random
 from sklearn import datasets
 from PIL import Image
@@ -24,6 +24,7 @@ def preprocess_data(f_path, i_path, movies):
 
 	## intialization
 	rows = min(len(movies), settings.E_NUM)
+	rows = len(movies)
 	Y_test = np.ones((rows, 1))
 	X_test = np.zeros((rows, 1178))
 	I_test = []
@@ -47,7 +48,7 @@ def preprocess_data(f_path, i_path, movies):
 
 	## computing X_test, I_test
 	for row in range(len(movies)):
-		X_test[row: ] = torch.load(f_path + movies[row]['image'], map_location='cpu').numpy()
+		# X_test[row: ] = torch.load(f_path + movies[row]['image'], map_location='cpu').numpy()
 		img = np.array(Image.open(i_path + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
 		img = np.rot90(img, 2)
 		img = np.fliplr(img)
@@ -65,9 +66,9 @@ def apply_tsne(data):
 	tsne_result = tsne.fit_transform(data)
 	return tsne_result
 
-def bokeh_plot(X_test, I_test, df):
-	p = figure(x_range=(-500, 500), y_range=(-500, 500), plot_width=950, plot_height=950)
-	p.image_rgba(image=I_test, x=df['c1'], y=df['c2'], dw=1, dh=1)
+def bokeh_plot(I_test, df):
+	p = figure(x_range=(-10, 10), y_range=(-10, 10), plot_width=1600, plot_height=800)
+	p.image_rgba(image=I_test, x=df['c1'], y=df['c2'], dw=1, dh=2)
 	return json_item(p)
 
 def visualize_features(X_test, Y_test, I_test, pca_components):
@@ -75,6 +76,12 @@ def visualize_features(X_test, Y_test, I_test, pca_components):
 	df = pd.DataFrame(X_test, columns=feat_cols)
 	df['label'] = Y_test
 	df['label'] = df['label'].apply(lambda i: str(i))
+
+	# if only one data point then pca returns error.
+	if X_test.shape[0] == 1:
+		df['c1'] = [0]
+		df['c2'] = [0]
+		return bokeh_plot(I_test, df)
 
 	rndperm = np.random.permutation(df.shape[0])
 	pca_result = apply_pca(df[feat_cols].values, pca_components)
@@ -86,25 +93,25 @@ def visualize_features(X_test, Y_test, I_test, pca_components):
 
 	df_tsne['c1'] = tsne_result[:, 0]
 	df_tsne['c2'] = tsne_result[:, 1]
-	return bokeh_plot(X_test, I_copy, df_tsne)
+	return bokeh_plot(I_copy, df_tsne)
 
 def get_distance(x, y):
 	return np.linalg.norm(x-y)
 
 def get_top_neighbours(path, image, movies, k):
 	k = k + 1
-	features = torch.load(path + image, map_location='cpu').numpy()
+	# features = torch.load(path + image, map_location='cpu').numpy()
 	# features = np.array(Image.open(path + image).resize((10,10), Image.BICUBIC)).flatten()[:100]
 	random.shuffle(movies)
 	maxHeap = []
 	for j in range(len(movies)):
-		features2 = torch.load(path + movies[j]['image'], map_location='cpu').numpy()
+		# features2 = torch.load(path + movies[j]['image'], map_location='cpu').numpy()
 		# features2 = np.array(Image.open(path + movies[j]['image']).resize((10,10), Image.BICUBIC)).flatten()[:100]
-		d = get_distance(features, features2)
-		print(features.shape, features2.shape)
+		# d = get_distance(features, features2)
+		# print(features.shape, features2.shape)
 		# d = np.sum(np.square(features - features2))
-		print(d,j)
-		# d = 0
+		# print(d,j)
+		d = 0
 		if len(maxHeap) < k:
 			heapq.heappush(maxHeap, (-d, j))
 		else:
