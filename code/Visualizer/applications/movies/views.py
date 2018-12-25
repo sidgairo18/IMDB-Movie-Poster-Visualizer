@@ -17,18 +17,24 @@ def feature_visualization(request):
 	return render(request, 'movies/embeddings.html', {})
 
 def ajax_get_embeddings(request):
-	year = None
-	category = None
-	if 'year' in request.GET:
-		year = request.GET['year']
-	if 'category' in request.GET:
-		category = request.GET['category']
-		if category == 'None' : category = None
+	syear = None
+	eyear = None
+	categories = None
+	andopr = None
+	if 'syear' in request.GET:
+		syear = request.GET['syear']
+	if 'eyear' in request.GET:
+		eyear = request.GET['eyear']
+	if 'category[]' in request.GET:
+		categories = request.GET.getlist('category[]')
+	if 'andopr' in request.GET:
+		andopr = request.GET['andopr']
+		andopr = True if (andopr == 'true') else False
 
-	movies = get_movies(year=year, category=category)
+	movies = get_movies_range(syear=syear, eyear=eyear, categories=categories, andopr=andopr)
 	if len(movies) > 0:
 		X_t, Y_t, I_t = utils.preprocess_data(settings.FEATURE, settings.DATASET, movies)
-		plot = utils.visualize_features(X_t, Y_t, I_t, min(settings.E_PCA, len(movies)))
+		plot = utils.visualize_features(X_t, Y_t, I_t, min(settings.E_PCA, X_t.shape[0]))
 	else:
 		return HttpResponse(json.dumps({
 				'error': 'No movies in this category'

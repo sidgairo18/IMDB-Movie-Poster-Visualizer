@@ -8,13 +8,28 @@
 	<table class="table" id="eoptionsTable">
 		<tbody>
 			<tr>
-				<td style="width: 45%;">
-					<input class="form-control mr-sm-2" type="text" placeholder="Year" id="eoptionsYear">
+				<td style="width: 20%;">
+					<input class="form-control mr-sm-2" type="text" placeholder="Start year" id="eoptionsSyear">
 				</td>
-				<td style="width: 45%;">
-					<select class="form-control" id="eoptionsGenre"></select>
+				<td style="width: 20%;">
+					<input class="form-control mr-sm-2" type="text" placeholder="End year" id="eoptionsEyear">
 				</td>
-				<td>
+				<td style="width: 20%;">
+					<select multiple="" class="form-control" id="eoptionsGenre"></select>
+				</td>
+				<td style="width: 15%">
+					<div class="form-check">
+						<label class="form-check-label">
+							<input type="radio" class="form-check-input" name="eoptionsOpr" id="eoptionsGenreAnd" checked=""> AND
+						</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input type="radio" class="form-check-input" name="eoptionsOpr"> OR
+						</label>
+					</div>
+				</td>
+				<td style="width: 25%">
 					<button class="btn btn-secondary my-2 my-sm-0" type="submit" id="eoptionsSubmit">Plot</button>
 				</td>
 			</tr>

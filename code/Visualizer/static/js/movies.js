@@ -48,7 +48,7 @@ var top_k_neighbours = {
 
 		// get genres and random movies at first
 		top_k_neighbours.getGenres();
-		top_k_neighbours.getMovies(null, null);
+		top_k_neighbours.getMovies(null, null, null, null);
 	},
 	getGenres: function () {
 		utils.jsonRequest('GET', '/ajax/genres', {},
@@ -176,21 +176,32 @@ var top_k_neighbours = {
 var embeddings = {
 	init: function () {
 		$('#eoptionsSubmit').click(function () {
-			year = $('#eoptionsYear').val();
-			year = (year != "")? parseInt(year) : null;
+			syear = $('#eoptionsSyear').val();
+			eyear = $('#eoptionsEyear').val();
 			category = $('#eoptionsGenre').val();
-			category = (category != "")? category : null;
-			embeddings.bokehPlot(year, category);
+			syear = (syear != "")? parseInt(syear) : null;
+			eyear = (eyear != "")? parseInt(eyear) : null;
+			andopr = $('#eoptionsGenreAnd').is(':checked');
+			embeddings.bokehPlot(syear, eyear, category, andopr);
 		});
+
+		// get all movies plot at first
 		embeddings.getGenres();
+		// embeddings.bokehPlot(null, null, null, null);
 	},
-	bokehPlot: function (year, category) {
+	bokehPlot: function (syear, eyear, category, andopr) {
 		params = {};
-		if(year != null) {
-			params.year = year;
+		if(syear != null) {
+			params.syear = syear;
+		}
+		if(eyear != null) {
+			params.eyear = eyear;
 		}
 		if(category != null) {
 			params.category = category;
+		}
+		if(andopr != null) {
+			params.andopr = andopr;
 		}
 		utils.jsonRequest('GET', '/ajax/embeddings', params,
 		successCallback = function (response) {
@@ -200,6 +211,7 @@ var embeddings = {
 			}
 			else {
 				$('#plot1').html("");
+				// global_var = response.plot;
 				Bokeh.embed.embed_item(response.plot, "plot1");
 			}
 		},
