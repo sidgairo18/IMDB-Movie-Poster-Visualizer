@@ -4,6 +4,7 @@ import random
 from sklearn import datasets
 from PIL import Image
 import pandas as pd
+from scipy import spatial
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from bokeh.plotting import figure, show
@@ -98,17 +99,21 @@ def visualize_features(X_test, Y_test, I_test, pca_components):
 def get_distance(x, y):
 	return np.linalg.norm(x-y)
 
+def get_cosine_similarity(x, y):
+	return 1 - spatial.distance.cosine(x, y)
+
 def get_top_neighbours(path, image, movies, k):
 	k = k + 1
-	# features = torch.load(path + image, map_location='cpu').numpy()
 	features = np.load(path + image + '.npy')
 	random.shuffle(movies)
 	maxHeap = []
 	for j in range(len(movies)):
 		features2 = np.load(path + movies[j]['image'] + '.npy')
-		# features2 = torch.load(path + movies[j]['image'], map_location='cpu').numpy()
 		d = get_distance(features, features2)
 		print(d,j)
+		movies['fdistance'] = d
+		d = get_cosine_similarity(features, features2)
+		movies['cdistance'] = d
 		# d = 0
 		if len(maxHeap) < k:
 			heapq.heappush(maxHeap, (-d, j))

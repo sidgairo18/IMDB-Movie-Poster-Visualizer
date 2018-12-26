@@ -5,7 +5,7 @@ K Neighbours (Tab 1)
 2. Multiple Genre Selection (for both AND / OR ) - [Done] 
 3. Features + lambda (Matrix + Combination) - [Done]
 4. Correlation in terms of Genres, features, plots.
-5. Cosine similarity, distance in feature space of the neighbours.
+5. Cosine similarity, distance in feature space of the neighbours. - [Done]
 6. Hover box to show details.
 
 Visualzations (Tab 2)

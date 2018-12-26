@@ -184,6 +184,10 @@ var top_k_neighbours = {
 		str += movie.title + '</p>';
 		str += '<h5 style="padding:10px;">Label</h5><p style="height:25px;">';
 		str += movie.image.split("_")[1].split(".")[0] + '</p>';
+		str += '<h5 style="padding:10px;">Feature Distance</h5><p style="height:25px;">';
+		str += movie.fdistance + '</p>';
+		str += '<h5 style="padding:10px;">Cosine Similarity</h5><p style="height:25px;">';
+		str += movie.cdistance + '</p>';
 		str += '<h5 style="padding:10px;">Genre</h5><p style="height:70px;">';
 		for(var k = 0; k < movie.genres.length; k++) {
 			str += movie.genres[k] + '<br/>';
