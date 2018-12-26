@@ -40,14 +40,26 @@ class MovieToGenre(models.Model):
 			'genre': cls.genre.serialize()
 		}
 
-class FeatureToMovie(models.Model):
+class Feature(models.Model):
 	name = models.CharField(max_length=200, null=True)
-	path = models.CharField(max_length=200, null=True)
-	movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+	desc = models.CharField(max_length=2000, null=True)
 
 	def serialize(cls):
 		return {
 			'name': cls.name,
-			'feature': cls.path,
-			'movie': cls.movie.serialize()
+			'desc': cls.desc
+		}
+
+class FeatureToMovie(models.Model):
+	movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True)
+	feature = models.ForeignKey(Genre, on_delete=models.CASCADE, null=True)
+	x = models.FloatField(default=0.0, null=True)
+	y = models.FloatField(default=0.0, null=True)
+
+	def serialize(cls):
+		return {
+			'movie': cls.movie.serialize(),
+			'feature': cls.feature.serialize(),
+			'x': cls.x,
+			'y': cls.y
 		}
