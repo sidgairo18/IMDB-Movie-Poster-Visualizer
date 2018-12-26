@@ -109,11 +109,11 @@ def get_top_neighbours(path, image, movies, k):
 	maxHeap = []
 	for j in range(len(movies)):
 		features2 = np.load(path + movies[j]['image'] + '.npy')
+		d = get_cosine_similarity(features, features2)
+		movies[j]['cdistance'] = str(d)[:8]
 		d = get_distance(features, features2)
 		print(d,j)
-		movies['fdistance'] = d
-		d = get_cosine_similarity(features, features2)
-		movies['cdistance'] = d
+		movies[j]['fdistance'] = str(d)[:8]
 		# d = 0
 		if len(maxHeap) < k:
 			heapq.heappush(maxHeap, (-d, j))
