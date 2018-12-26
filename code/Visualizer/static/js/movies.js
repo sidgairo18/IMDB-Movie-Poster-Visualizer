@@ -175,10 +175,17 @@ var top_k_neighbours = {
 			str += '</tr>';
 		}
 		tbody.html(str);
+		var neighbours = $('#topNeighboursTable').find('td');
+		neighbours.each(function(idx) {
+			$(neighbours[idx]).hover(
+				function () { $(this).find('div').removeClass('hidden');},
+				function () { $(this).find('div').addClass('hidden');}
+			);
+		});
 	},
 	getMovieInfo: function (movie) {
 		var str = "";
-		str += '<div class="card text-white bg-primary mb-3" style="max-width: 30rem; text-align:center;">';
+		str += '<div class="card text-white bg-primary mb-3 hidden" style="max-width: 30rem; text-align:center;">';
 		str += '<div class="card-header" style="font-size:17px; padding:3px;">Movie Info</div>';
 		str += '<h5 style="padding:10px;">Title</h5><p style="height:50px;">';
 		str += movie.title + '</p>';
