@@ -119,7 +119,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 DATASET = os.path.join(os.environ['dataset'], "")
-FEATURE = os.path.join(os.environ['feature'], "")
+FEATURES = {}
+
+if 'pca' in os.environ:
+    FEATURES['pca'] = os.path.join(os.environ['pca'], "")
+
+if 'gist' in os.environ:
+    FEATURES['gist'] = os.path.join(os.environ['gist'], "")
+
+if 'plot' in os.environ:
+    FEATURES['plot'] = os.path.join(os.environ['plot'], "")
+
+if 'fc7' in os.environ:
+    FEATURES['fc7'] = os.path.join(os.environ['fc7'], "")
 
 STATIC_ROOT = ''
 
@@ -127,8 +139,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
-    DATASET,
-    FEATURE
+    DATASET
 )
 
 # Embedding hyper parameters

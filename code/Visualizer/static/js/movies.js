@@ -18,6 +18,13 @@ var utils = {
 		}
 		select.html(str);
 	},
+	addFeatures: function(features, select) {
+		str = "";
+		for(var i = 0; i < features.length; i++) {
+			str += "<option>" + features[i].name + "</option>";
+		}
+		select.html(str);
+	},
     shuffle: function (array) {
   		var currentIndex = array.length, temporaryValue, randomIndex;
 		while (0 !== currentIndex) {
@@ -48,7 +55,18 @@ var top_k_neighbours = {
 
 		// get genres and random movies at first
 		top_k_neighbours.getGenres();
+		top_k_neighbours.getFeatures();
 		top_k_neighbours.getMovies(null, null, null, null);
+	},
+	getFeatures: function () {
+		utils.jsonRequest('GET', '/ajax/features', {},
+		successCallback = function (response) {
+			$.notify('successfully fetched features', 'success');
+			utils.addFeatures(response.features, $('#optionsFeature'));
+		},
+		errorCallback = function(response) {
+			$.notify('failed to get features', 'error');
+		}); 
 	},
 	getGenres: function () {
 		utils.jsonRequest('GET', '/ajax/genres', {},
@@ -115,9 +133,11 @@ var top_k_neighbours = {
 	getTopNeighbours: function(image) {
 		k = $('#optionsK').val();
 		k = (k != "")? parseInt(k) : 8;
+		feature = $('#optionsFeature').val();
 		utils.jsonRequest('GET', '/ajax/top_neighbours', {
 			'image': image,
-			'k': k
+			'k': k,
+			'feature': feature
 		},
 		successCallback = function (response) {
 			$.notify('successfully gathered top k','success');
@@ -187,6 +207,7 @@ var embeddings = {
 
 		// get all movies plot at first
 		embeddings.getGenres();
+		embeddings.getFeatures();
 		// embeddings.bokehPlot(null, null, null, null);
 	},
 	bokehPlot: function (syear, eyear, category, andopr) {
@@ -211,7 +232,6 @@ var embeddings = {
 			}
 			else {
 				$('#plot1').html("");
-				// global_var = response.plot;
 				Bokeh.embed.embed_item(response.plot, "plot1");
 			}
 		},
@@ -219,7 +239,16 @@ var embeddings = {
 			$.notify('failed to get bokeh plot', 'error');
 		});
 	},
-	getGenres: function () {
+	getFeatures: function () {
+		utils.jsonRequest('GET', '/ajax/features', {},
+		successCallback = function (response) {
+			$.notify('successfully fetched features', 'success');
+			utils.addFeatures(response.features, $('#eoptionsFeature'));
+		},
+		errorCallback = function(response) {
+			$.notify('failed to get features', 'error');
+		}); 
+	},	getGenres: function () {
 		utils.jsonRequest('GET', '/ajax/genres', {},
 		successCallback = function (response) {
 			$.notify('successfully fetched genres', 'success');

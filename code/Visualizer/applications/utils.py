@@ -101,17 +101,15 @@ def get_distance(x, y):
 def get_top_neighbours(path, image, movies, k):
 	k = k + 1
 	# features = torch.load(path + image, map_location='cpu').numpy()
-	# features = np.array(Image.open(path + image).resize((10,10), Image.BICUBIC)).flatten()[:100]
+	features = np.load(path + image + '.npy')
 	random.shuffle(movies)
 	maxHeap = []
 	for j in range(len(movies)):
+		features2 = np.load(path + movies[j]['image'] + '.npy')
 		# features2 = torch.load(path + movies[j]['image'], map_location='cpu').numpy()
-		# features2 = np.array(Image.open(path + movies[j]['image']).resize((10,10), Image.BICUBIC)).flatten()[:100]
-		# d = get_distance(features, features2)
-		# print(features.shape, features2.shape)
-		# d = np.sum(np.square(features - features2))
-		# print(d,j)
-		d = 0
+		d = get_distance(features, features2)
+		print(d,j)
+		# d = 0
 		if len(maxHeap) < k:
 			heapq.heappush(maxHeap, (-d, j))
 		else:

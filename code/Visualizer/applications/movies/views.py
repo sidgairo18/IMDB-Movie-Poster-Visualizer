@@ -21,6 +21,7 @@ def ajax_get_embeddings(request):
 	eyear = None
 	categories = None
 	andopr = None
+	feature = None
 	if 'syear' in request.GET:
 		syear = request.GET['syear']
 	if 'eyear' in request.GET:
@@ -30,10 +31,14 @@ def ajax_get_embeddings(request):
 	if 'andopr' in request.GET:
 		andopr = request.GET['andopr']
 		andopr = True if (andopr == 'true') else False
+	if 'feature' in request.GET:
+		feature = request.GET['feature']
+	if feature not in settings.FEATURES:
+		raise Exception('path for this feature not specified')
 
 	movies = get_movies_range(syear=syear, eyear=eyear, categories=categories, andopr=andopr)
 	if len(movies) > 0:
-		X_t, Y_t, I_t = utils.preprocess_data(settings.FEATURE, settings.DATASET, movies)
+		X_t, Y_t, I_t = utils.preprocess_data(settings.FEATURES[feature], settings.DATASET, movies)
 		plot = utils.visualize_features(X_t, Y_t, I_t, min(settings.E_PCA, X_t.shape[0]))
 	else:
 		return HttpResponse(json.dumps({
@@ -71,15 +76,28 @@ def ajax_get_genres(request):
 			'genres': genres
 		}), content_type="application/json", status=200)
 
+def ajax_get_features(request):
+	features = get_features()
+	return HttpResponse(json.dumps({
+			'total': len(features),
+			'features': features
+		}), content_type="application/json", status=200)
+
 def ajax_get_top_neighbours(request):
 	image = None
 	k = None
+	feature = None
 	if 'image' in request.GET:
 		image = request.GET['image']
 	if 'k' in request.GET:
 		k = int(request.GET['k'])
+	if 'feature' in request.GET:
+		feature = request.GET['feature']
+	if feature not in settings.FEATURES:
+		raise Exception('path for this feature not specified')
+
 	movies = get_movies()
-	movies = utils.get_top_neighbours(settings.FEATURE, image, movies, k)
+	movies = utils.get_top_neighbours(settings.FEATURES[feature], image, movies, k)
 	for movie in movies:
 		movie['genres'] = get_genres_by_movie(movie)
 	return HttpResponse(json.dumps({
@@ -109,6 +127,11 @@ def get_genres():
 	items = Genre.objects.all()
 	genres = [item.serialize() for item in items]
 	return genres
+
+def get_features():
+	items = Feature.objects.all()
+	features = [item.serialize() for item in items]
+	return features
 
 def get_movies_range(syear, eyear, categories, andopr):
 	items = MovieToGenre.objects.select_related('movie', 'genre')
