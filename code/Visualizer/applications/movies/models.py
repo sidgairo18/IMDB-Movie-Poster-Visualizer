@@ -52,7 +52,7 @@ class Feature(models.Model):
 
 class FeatureToMovie(models.Model):
 	movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True)
-	feature = models.ForeignKey(Genre, on_delete=models.CASCADE, null=True)
+	feature = models.ForeignKey(Feature, on_delete=models.CASCADE, null=True)
 	x = models.FloatField(default=0.0, null=True)
 	y = models.FloatField(default=0.0, null=True)
 
