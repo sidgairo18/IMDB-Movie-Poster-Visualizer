@@ -1,5 +1,6 @@
 import numpy as np
 # import torch
+import json
 import random
 from sklearn import datasets
 from PIL import Image
@@ -26,9 +27,9 @@ def preprocess_data(f_path, i_path, movies):
 
 	## intialization
 	rows = min(len(movies), settings.E_NUM)
-	rows = len(movies)
-	# Y_test = np.ones((rows, 1))
-	Y_test = []
+	# rows = len(movies)
+	Y_test = np.ones((rows, 1))
+	# Y_test = []
 	X_test = np.zeros((rows, np.load(f_path + movies[0]['image'] + '.npy').shape[1]))
 	I_test = []
 
@@ -37,20 +38,20 @@ def preprocess_data(f_path, i_path, movies):
 	movies = movies[:rows]
 
 	## intialize labels for each movie
-	# labels = {}
-	# cnt = 0
-	# for row in range(len(movies)):
-	# 	image = movies[row]['image']
-	# 	image = image.split('.')[0].split('_')[1]
-	# 	if image in labels:
-	# 		Y_test[row: ] = labels[image]
-	# 	else:
-	# 		labels[image] = cnt
-	# 		Y_test[row: ] = cnt
-	# 		cnt = cnt + 1
+	labels = {}
+	cnt = 0
 	for row in range(len(movies)):
 		image = movies[row]['image']
-		Y_test.append(image)
+		image = image.split('.')[0].split('_')[1]
+		if image in labels:
+			Y_test[row: ] = labels[image]
+		else:
+			labels[image] = cnt
+			Y_test[row: ] = cnt
+			cnt = cnt + 1
+	# for row in range(len(movies)):
+	# 	image = movies[row]['image']
+	# 	Y_test.append(image)
 
 	## computing X_test, I_test
 	for row in range(len(movies)):
@@ -81,8 +82,8 @@ def bokeh_plot(I_test, x_cor, y_cor):
 def visualize_features(X_test, Y_test, I_test, pca_components):
 	feat_cols = [ 'pixel'+str(i) for i in range(X_test.shape[1]) ]
 	df = pd.DataFrame(X_test, columns=feat_cols)
-	df['label'] = Y_test
-	# df['label'] = df['label'].apply(lambda i: str(i))
+	# df['label'] = Y_test
+	df['label'] = df['label'].apply(lambda i: str(i))
 
 	# if only one data point then pca returns error.
 	if X_test.shape[0] == 1:
@@ -100,7 +101,7 @@ def visualize_features(X_test, Y_test, I_test, pca_components):
 
 	df_tsne['c1'] = tsne_result[:, 0]
 	df_tsne['c2'] = tsne_result[:, 1]
-	save_coordinates(df_tsne['label'], df_tsne['c1'], df_tsne['c2'], 'pca')
+	# save_coordinates(df_tsne['label'], df_tsne['c1'], df_tsne['c2'], 'pca')
 	return bokeh_plot(I_copy, df_tsne['c1'], df_tsne['c2'])
 
 def save_coordinates(images, x, y, feature):
