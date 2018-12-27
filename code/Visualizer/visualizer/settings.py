@@ -144,6 +144,6 @@ STATICFILES_DIRS = (
 
 # Embedding hyper parameters
 
-E_ITER = 500
-E_PCA = 50
+E_ITER = 2000
+E_PCA = 100
 E_NUM = 500

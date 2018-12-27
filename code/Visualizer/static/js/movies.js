@@ -213,7 +213,8 @@ var embeddings = {
 			syear = (syear != "")? parseInt(syear) : null;
 			eyear = (eyear != "")? parseInt(eyear) : null;
 			andopr = $('#eoptionsGenreAnd').is(':checked');
-			embeddings.bokehPlot(syear, eyear, category, andopr);
+			feature = $('#eoptionsFeature').val();
+			embeddings.bokehPlot(syear, eyear, category, andopr, feature);
 		});
 
 		// get all movies plot at first
@@ -221,7 +222,7 @@ var embeddings = {
 		embeddings.getFeatures();
 		// embeddings.bokehPlot(null, null, null, null);
 	},
-	bokehPlot: function (syear, eyear, category, andopr) {
+	bokehPlot: function (syear, eyear, category, andopr, feature) {
 		params = {};
 		if(syear != null) {
 			params.syear = syear;
@@ -234,6 +235,9 @@ var embeddings = {
 		}
 		if(andopr != null) {
 			params.andopr = andopr;
+		}
+		if(feature != null) {
+			params.feature = feature;
 		}
 		utils.jsonRequest('GET', '/ajax/embeddings', params,
 		successCallback = function (response) {
