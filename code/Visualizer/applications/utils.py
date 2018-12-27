@@ -104,7 +104,17 @@ def visualize_features(X_test, Y_test, I_test, pca_components):
 	return bokeh_plot(I_copy, df_tsne['c1'], df_tsne['c2'])
 
 def save_coordinates(images, x, y, feature):
-	print(images, x, y, feature)
+	obj = {}
+	obj['data'] = []
+	for i in range(len(images)):
+		obj['data'].append({})
+		obj['data'][i]['image'] = images[i]
+		obj['data'][i]['x'] = x[i]
+		obj['data'][i]['y'] = y[i]
+		obj['data'][i]['feature'] = features
+	with open('temp.json', 'w') as outfile:
+		json.dump(obj, outfile, indent=4, sort_keys=True)
+
 
 def get_distance(x, y):
 	return np.linalg.norm(x-y)
