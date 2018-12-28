@@ -116,6 +116,22 @@ def save_coordinates(images, x, y, feature):
 	with open('temp.json', 'w') as outfile:
 		json.dump(obj, outfile, indent=4, sort_keys=True)
 
+def get_plot_values(i_path, movies, f_name):
+	I_test = []
+	X_cor = []
+	Y_cor = []
+	for row in range(len(movies)):
+		print(row, len(movies))
+		movie = Movie.objects.filter(image=movies[row]['image'])[0]
+		feature = Feature.objects.filter(name=f_name)[0]
+		feature_to_movie = FeatureToMovie.objects.filter(movie=movie,feature=feature)[0].serialize()
+		img = np.array(Image.open(i_path + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
+		img = np.rot90(img, 2)
+		img = np.fliplr(img)
+		X_cor.append(feature_to_movie['x'])
+		Y_cor.append(feature_to_movie['y'])
+		I_test.append(img)
+	return X_cor, Y_cor, I_test
 
 def get_distance(x, y):
 	return np.linalg.norm(x-y)
