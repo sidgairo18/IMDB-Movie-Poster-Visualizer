@@ -40,7 +40,6 @@ def ajax_get_embeddings(request):
 		# plot = utils.visualize_features(X_t, Y_t, I_t, min(settings.E_PCA, X_t.shape[0]))
 		X_cor, Y_cor, I_t = utils.get_plot_values(settings.DATASET, movies, feature)
 		plot = utils.bokeh_plot(I_t, X_cor, Y_cor)
-		print('got plot from the list')
 	else:
 		return HttpResponse(json.dumps({
 				'error': 'No movies in this category'
