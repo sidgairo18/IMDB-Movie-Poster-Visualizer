@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
 	url(r'^ajax/embeddings', views.ajax_get_embeddings, name='Ajax request for embeddings'),
+	url(r'^ajax/stats', views.ajax_get_stats, name='Ajax request for getting stats of embeddings'),
 	url(r'^ajax/genres', views.ajax_get_genres, name='Ajax request for genre list'),
 	url(r'^ajax/features', views.ajax_get_features, name='Ajax request for features list'),
     url(r'^ajax/movies', views.ajax_get_movies, name='Ajax request for movie list'),

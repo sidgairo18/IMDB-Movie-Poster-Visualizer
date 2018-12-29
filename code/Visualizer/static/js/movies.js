@@ -248,11 +248,42 @@ var embeddings = {
 			else {
 				$('#plot1').html("");
 				Bokeh.embed.embed_item(response.plot, "plot1");
+				embeddings.plotMovies = response.movies;
 			}
 		},
 		errorCallback = function(response) {
 			$.notify('failed to get bokeh plot', 'error');
 		});
+	},
+	plotMovies: null,
+	getStats: function (x1, x2, y1, y2) {
+		if(embeddings.plotMovies == null) {
+			$.notify('no movies in this plot', 'error');
+			return;
+		}
+		utils.jsonRequest('GET', '/ajax/stats', {
+			'movie_ids': embeddings.filterPlotMovies(x1, x2, y1, y2)
+		},
+		successCallback = function (response) {
+			$.notify('successfully fetched stats', 'success');
+			embeddings.displayStats(response.genres);
+		},
+		errorCallback = function(response) {
+			$.notify('failed to get stats', 'error');
+		});
+	},
+	filterPlotMovies: function (x1, x2, y1, y2) {
+		filteredMovies = [];
+		for(var i = 0; i < embeddings.plotMovies.length; i++) {
+			if(x1 <= embeddings.plotMovies[i].x && embeddings.plotMovies[i].x <= x2
+				&& y1 <= embeddings.plotMovies[i].y && embeddings.plotMovies[i].y <= y2) {
+				filteredMovies.push(embeddings.plotMovies[i].id);
+			}
+		}
+		return filteredMovies;
+	},
+	displayStats: function (genres) {
+		console.log(genres);
 	},
 	getFeatures: function () {
 		utils.jsonRequest('GET', '/ajax/features', {},

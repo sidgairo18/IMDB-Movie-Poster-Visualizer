@@ -12,6 +12,8 @@ from bokeh.plotting import figure, show
 from bokeh.embed import json_item
 import visualizer.settings as settings
 from applications.movies.models import *
+from bokeh.events import *
+from bokeh.models import CustomJS
 import heapq 
 
 def filter_unique(oldlist, field):
@@ -75,8 +77,12 @@ def apply_tsne(data):
 	return tsne_result
 
 def bokeh_plot(I_test, x_cor, y_cor):
-	p = figure(x_range=(-10, 10), y_range=(-10, 10), plot_width=1600, plot_height=800)
+	p = figure(x_range=(-10, 10), y_range=(-10, 10), plot_width=1600, plot_height=800, tools="pan,wheel_zoom,reset,box_select")
 	p.image_rgba(image=I_test, x=x_cor, y=y_cor, dw=1, dh=2)
+	callback = CustomJS(code='''
+		embeddings.getStats(cb_obj.geometry.x0, cb_obj.geometry.x1, cb_obj.geometry.y0, cb_obj.geometry.y1);
+		''')
+	p.js_on_event(SelectionGeometry, callback);
 	return json_item(p)
 
 def visualize_features(X_test, Y_test, I_test, pca_components):
@@ -120,10 +126,10 @@ def get_plot_values(i_path, movies, f_name):
 	I_test = []
 	X_cor = []
 	Y_cor = []
+	feature = Feature.objects.filter(name=f_name)[0]
 	for row in range(len(movies)):
 		print(row, len(movies))
 		movie = Movie.objects.filter(image=movies[row]['image'])[0]
-		feature = Feature.objects.filter(name=f_name)[0]
 		feature_to_movie = FeatureToMovie.objects.filter(movie=movie,feature=feature)[0].serialize()
 		img = np.array(Image.open(i_path + movies[row]['image']).resize((100,100), Image.BICUBIC).convert('RGBA'))
 		img = np.rot90(img, 2)

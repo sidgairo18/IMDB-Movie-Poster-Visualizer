@@ -16,6 +16,23 @@ def top_k_neighbours(request):
 def feature_visualization(request):
 	return render(request, 'movies/embeddings.html', {})
 
+def ajax_get_stats(request):
+	movie_ids = None
+	genres = []
+	if 'movie_ids[]' in request.GET:
+		movie_ids = request.GET.getlist('movie_ids[]')
+
+	if movie_ids != None:
+		queries = [Q(movie__id=movie_id) for movie_id in movie_ids]
+		query = queries.pop()
+		for item in queries:
+			query |= item
+		genres = list(MovieToGenre.objects.filter(query).values_list('genre__name', flat=True))
+
+	return HttpResponse(json.dumps({
+			'genres': genres
+		}), content_type="applications/json", status=200)
+
 def ajax_get_embeddings(request):
 	syear = None
 	eyear = None
@@ -39,13 +56,18 @@ def ajax_get_embeddings(request):
 		# X_t, Y_t, I_t = utils.preprocess_data(settings.FEATURES[feature], settings.DATASET, movies)
 		# plot = utils.visualize_features(X_t, Y_t, I_t, min(settings.E_PCA, X_t.shape[0]))
 		X_cor, Y_cor, I_t = utils.get_plot_values(settings.DATASET, movies, feature)
+		for i in range(len(movies)):
+			movies[i]['x'] = X_cor[i]
+			movies[i]['y'] = Y_cor[i]
+
 		plot = utils.bokeh_plot(I_t, X_cor, Y_cor)
 	else:
 		return HttpResponse(json.dumps({
 				'error': 'No movies in this category'
 			}), content_type="application/json", status=200)
 	return HttpResponse(json.dumps({
-			'plot': plot
+			'plot': plot,
+			'movies': movies
 		}), content_type="application/json", status=200)
 
 def ajax_get_movies(request):
