@@ -15,5 +15,5 @@ Visualzations (Tab 2)
 3. Range for the above. - [Done]
 4. Start with all Years and Genres: - [Done]
    * Add and Remove to the same plot. (Donot generate the same plot again and again.)
-5. Give max Genre for each grid.
-6. Crop select and display stats.
+5. Give max Genre for each grid. - [Done]
+6. Crop select and display stats. - [Done]
