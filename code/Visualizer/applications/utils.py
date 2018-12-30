@@ -77,8 +77,8 @@ def apply_tsne(data):
 	return tsne_result
 
 def bokeh_plot(I_test, x_cor, y_cor):
-	p = figure(x_range=(-10, 10), y_range=(-10, 10), plot_width=1600, plot_height=800, tools="pan,wheel_zoom,reset,box_select")
-	p.image_rgba(image=I_test, x=x_cor, y=y_cor, dw=1, dh=2)
+	p = figure(x_range=(-10, 10), y_range=(-10, 10), plot_width=160*8, plot_height=160*8, tools="pan,wheel_zoom,reset,box_select")
+	p.image_rgba(image=I_test, x=x_cor, y=y_cor, dw=1, dh=1)
 	callback = CustomJS(code='''
 		embeddings.getStats(cb_obj.geometry.x0, cb_obj.geometry.x1, cb_obj.geometry.y0, cb_obj.geometry.y1);
 		''')

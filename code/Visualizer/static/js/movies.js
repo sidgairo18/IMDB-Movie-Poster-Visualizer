@@ -283,7 +283,23 @@ var embeddings = {
 		return filteredMovies;
 	},
 	displayStats: function (genres) {
-		console.log(genres);
+		var obj = {};
+		for(var i = 0; i < genres.length; i++) {
+			if(obj.hasOwnProperty(genres[i])) {
+				obj[genres[i]] += 1;
+			}
+			else {
+				obj[genres[i]] = 1;
+			}
+		}
+		var list = [];
+		for(var ele in obj) {
+			list.push([ele, obj[ele]]);
+		}
+		list.sort(function(ele1, ele2) {
+			return ele2[1] - ele1[1];
+		});
+		embeddings.addGenresToStats(list);
 	},
 	getFeatures: function () {
 		utils.jsonRequest('GET', '/ajax/features', {},
@@ -294,15 +310,27 @@ var embeddings = {
 		errorCallback = function(response) {
 			$.notify('failed to get features', 'error');
 		}); 
-	},	getGenres: function () {
+	},	
+	getGenres: function () {
 		utils.jsonRequest('GET', '/ajax/genres', {},
 		successCallback = function (response) {
 			$.notify('successfully fetched genres', 'success');
 			utils.addGenres(response.genres, $('#eoptionsGenre'));
+			// embeddings.addGenresToStats(response.genres);
 		},
 		errorCallback = function(response) {
 			$.notify('failed to get genres', 'error');
 		});
 	},
-
+	addGenresToStats: function (genres) {
+		var table = $('#statsTable');
+		var tbody = table.find('tbody');
+		var str="";
+		for(var i = 0; i < genres.length; i++) {
+			str += '<tr><td style="width:50%">' + genres[i][0];
+			str += '</td><td style="width:50%">' + genres[i][1].toString();
+			str += '</td></tr>';
+		}
+		tbody.html(str);
+	}
 }
