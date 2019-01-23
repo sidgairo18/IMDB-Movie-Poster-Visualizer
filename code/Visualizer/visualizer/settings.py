@@ -25,7 +25,7 @@ SECRET_KEY = 'da3vl&&fx586(31&45%)k1$^gnjf3ik)1hu+l_hoj@lg001bi7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.2.16.125','localhost']
 
 
 # Application definition
@@ -118,20 +118,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-DATASET = os.path.join(os.environ['dataset'], "")
+DATASET = '/home/subramanyam/imdb_tool/dataset/'
 FEATURES = {}
 
-if 'pca' in os.environ:
-    FEATURES['pca'] = os.path.join(os.environ['pca'], "")
-
-if 'gist' in os.environ:
-    FEATURES['gist'] = os.path.join(os.environ['gist'], "")
-
-if 'plot' in os.environ:
-    FEATURES['plot'] = os.path.join(os.environ['plot'], "")
-
-if 'fc7' in os.environ:
-    FEATURES['fc7'] = os.path.join(os.environ['fc7'], "")
+FEATURES['pca'] = '/home/subramanyam/imdb_tool/features_pca/'
+FEATURES['gist'] = '/home/subramanyam/imdb_tool/features_gist/'
+FEATURES['plot'] = '/home/subramanyam/imdb_tool/features_plot/'
+FEATURES['fc7'] = '/home/subramanyam/imdb_tool/features_fc7/'
 
 STATIC_ROOT = ''
 
