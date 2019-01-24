@@ -118,20 +118,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-DATASET = os.path.join(os.environ['dataset'], "")
+DATASET = '/scratch/subramanyam/imdb_tool/dataset'
+
 FEATURES = {}
-
-if 'pca' in os.environ:
-    FEATURES['pca'] = os.path.join(os.environ['pca'], "")
-
-if 'gist' in os.environ:
-    FEATURES['gist'] = os.path.join(os.environ['gist'], "")
-
-if 'plot' in os.environ:
-    FEATURES['plot'] = os.path.join(os.environ['plot'], "")
-
-if 'fc7' in os.environ:
-    FEATURES['fc7'] = os.path.join(os.environ['fc7'], "")
+FEATURES['pca'] = '/scratch/subramanyam/imdb_tool/features_pca'
+FEATURES['fc7'] = '/scratch/subramanyam/imdb_tool/features_fc7'
+FEATURES['plot'] = '/scratch/subramanyam/imdb_tool/features_plot'
+FEATURES['gist'] = '/scratch/subramanyam/imdb_tool/features_gist'
 
 STATIC_ROOT = ''
 
